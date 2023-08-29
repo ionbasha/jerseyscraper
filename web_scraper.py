@@ -16,7 +16,9 @@ def VFSScraper():
 
         for jersey in jerseysListVFS:
             link = jersey.find('a')['href']
+            price = jersey.find('span').text
             print(link)
+            print(price)
         
     # Error
     except Exception as e:
@@ -31,16 +33,16 @@ def VFAScraper():
 
         # Scrape all listings on "Our collection" page
         soup = BeautifulSoup(result.content, 'html.parser')
-        jerseysListVFA = soup.find('div', class_='collection-listing cf').find_all('div', class_='product-block detail-mode-permanent')
+        jerseysListVFA = soup.find('div', class_='collection-listing cf').find_all('div', class_='innerer')
 
         for jersey in jerseysListVFA:
+            name = jersey.find('div', class_='title').text
             link = baseURL + jersey.find('a', class_='product-link')['href']
-            print(link)
+            price = jersey.find('span', class_='price').find('span', class_='theme-money').text        
         
     # Error
     except Exception as e:
         print(e)
 
-while(True):
-    VFAScraper()
-    time.sleep(20)
+
+VFSScraper()
