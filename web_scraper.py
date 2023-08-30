@@ -1,26 +1,30 @@
 
 from bs4 import BeautifulSoup
 import requests
-import time
+import os
+
+new_listings = 0
 
 # Find newly published jesey listings
 
 def VFSScraper():
     try:
-        URL = "https://www.vintagefootballshirts.com/new-products/"
-        result = requests.get(URL)
+        # Since the VFS website may add many jerseys to the site at a time,
+        # search first AND second page for any new additions
+        for i in range(1,3):
+            URL = "https://www.vintagefootballshirts.com/new-products/?page="+str(i)
+            result = requests.get(URL)
 
-        # Scrape all listings on "New products" page
-        soup = BeautifulSoup(result.content, 'html.parser')
-        jerseysListVFS = soup.find('div', id="content").find_all("div", class_="col4")
+            # Scrape all listings on "New products" page
+            soup = BeautifulSoup(result.content, 'html.parser')
+            jerseysListVFS = soup.find('div', id="content").find_all("div", class_="col4")
 
-        for jersey in jerseysListVFS:
-            link = jersey.find('a')['href']
-            price = jersey.find('span').text
-            print(link)
-            print(price)
-        
-    # Error
+            # Collect name, price and link
+            for jersey in jerseysListVFS:
+                name = jersey.find('img')['alt']
+                link = jersey.find('a')['href']
+                price = jersey.find('span').text
+
     except Exception as e:
         print(e)
 
@@ -35,14 +39,25 @@ def VFAScraper():
         soup = BeautifulSoup(result.content, 'html.parser')
         jerseysListVFA = soup.find('div', class_='collection-listing cf').find_all('div', class_='innerer')
 
+        # Collect name, price and link
         for jersey in jerseysListVFA:
             name = jersey.find('div', class_='title').text
             link = baseURL + jersey.find('a', class_='product-link')['href']
             price = jersey.find('span', class_='price').find('span', class_='theme-money').text        
-        
-    # Error
+
     except Exception as e:
         print(e)
 
+# Send desktop notification when finished
+def send_notification(title, text):
+    os.system("""
+              osascript -e 'display notification "{}" with title "{}"'
+              """.format(text, title))
 
-VFSScraper()
+# Run scrapers and send desktop notification with updates
+if __name__ == "__main__":
+    VFAScraper()
+    VFSScraper()
+    ttl = "jerseyscraper finished"
+    msg = f"{new_listings} new listings scraped"   
+    send_notification(ttl, msg)
