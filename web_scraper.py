@@ -2,8 +2,13 @@
 from bs4 import BeautifulSoup
 import requests
 import os
+from pymongo import MongoClient
 
-new_listings = 0
+#new_listings = 0
+connection_string = 'mongodb://localhost:27017/'
+client = MongoClient(connection_string)
+db = client.jerseyscraper_db
+collection = db.jersey_info
 
 # Find newly published jesey listings
 
@@ -55,9 +60,10 @@ def send_notification(title, text):
               """.format(text, title))
 
 # Run scrapers and send desktop notification with updates
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     VFAScraper()
     VFSScraper()
     ttl = "jerseyscraper finished"
     msg = f"{new_listings} new listings scraped"   
     send_notification(ttl, msg)
+ """
