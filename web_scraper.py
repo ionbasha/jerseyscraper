@@ -21,7 +21,7 @@ def VFSScraper():
         # Since the VFS website may add many jerseys to the site at a time,
         # search first three pages for any new additions
         for i in range(1,4):
-            URL = "https://www.vintagefootballshirts.com/new-products/?page="+str(i)
+            URL = SOME_URL
             result = requests.get(URL)
 
             # Scrape all listings on "New products" page
@@ -43,11 +43,11 @@ def VFSScraper():
 def VFAScraper():
     new_listings = 0  
     try:
-        baseURL='https://www.vintagefootballarea.com'
+        baseURL= SOME_baseURL
         # baseURL not included in href, so concatenate it manually
         # Search first three pages for new items
         for i in range(1,4):
-            URL = "https://www.vintagefootballarea.com/collections/tous-les-maillots?page="+str(i)
+            URL = SOME_URL2
             result = requests.get(URL)
 
             # Scrape all listings on "Our collection" page
